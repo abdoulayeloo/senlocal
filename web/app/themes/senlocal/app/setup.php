@@ -165,12 +165,16 @@ add_action('init', function () {
             'edit_item' => 'Modifier l’entreprise',
             'view_item' => 'Voir l’entreprise',
             'search_items' => 'Rechercher une entreprise',
+            'not_found' => 'Aucune entreprise trouvée',
+            'not_found_in_trash' => 'Aucune entreprise dans la corbeille',
+
         ],
         'public' => true,
         'has_archive' => true,
         'menu_icon' => 'dashicons-store',
-        'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
+        'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'page-attributes'],
         'rewrite' => ['slug' => 'entreprises'],
+        'taxonomies' => ['categorie', 'ville', 'tags_service'],
         'show_in_rest' => true,
     ]);
 });
@@ -378,14 +382,155 @@ add_action('acf/init', function () {
             ],
 
             // Exploitation
+            // Exploitation → Horaires (Group + Time Pickers)
             [
-                'key' => 'field_sen_horaires',
+                'key'   => 'field_sen_horaires_group',
                 'label' => 'Horaires d’ouverture',
                 'name'  => 'horaires',
-                'type'  => 'textarea',
-                'rows'  => 3,
-                'instructions' => 'Ex. Lun–Ven 09:00–18:00 ; Sam 10:00–14:00',
+                'type'  => 'group',
+                'layout' => 'block',
                 'wrapper' => ['width' => '100'],
+                'instructions' => 'Configure les horaires pour chaque jour. Coche "Ouvert" pour activer les heures.',
+                'sub_fields' => [
+
+                    // Lundi
+                    [
+                        'key'   => 'field_sen_hor_lun',
+                        'label' => 'Lundi',
+                        'name'  => 'lun',
+                        'type'  => 'group',
+                        'layout' => 'row',
+                        'wrapper' => ['width' => '33'],
+                        'sub_fields' => [
+                            ['key' => 'field_sen_hor_lun_open', 'label' => 'Ouvert', 'name'  => 'open', 'type'  => 'true_false', 'ui'    => 1, 'wrapper' => ['width' => '10'],],
+                            ['key' => 'field_sen_hor_lun_start', 'label' => 'Début', 'name'  => 'start', 'type'  => 'time_picker', 'display_format' => 'H:i', 'return_format'  => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_lun_open', 'operator' => '==', 'value' => 1]]],],
+                            ['key' => 'field_sen_hor_lun_end', 'label' => 'Fin', 'name'  => 'end', 'type'  => 'time_picker', 'display_format' => 'H:i', 'return_format'  => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_lun_open', 'operator' => '==', 'value' => 1]]],],
+                            ['key' => 'field_sen_hor_lun_pause_start', 'label' => 'Pause (début)', 'name'  => 'pause_start', 'type'  => 'time_picker', 'display_format' => 'H:i', 'return_format'  => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_lun_open', 'operator' => '==', 'value' => 1]]],],
+                            ['key' => 'field_sen_hor_lun_pause_end', 'label' => 'Pause (fin)', 'name'  => 'pause_end', 'type'  => 'time_picker', 'display_format' => 'H:i', 'return_format'  => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_lun_open', 'operator' => '==', 'value' => 1]]],],
+                        ],
+                    ],
+
+                    // Mardi
+                    [
+                        'key'   => 'field_sen_hor_mar',
+                        'label' => 'Mardi',
+                        'name'  => 'mar',
+                        'type'  => 'group',
+                        'layout' => 'row',
+                        'wrapper' => ['width' => '33'],
+                        'sub_fields' => [
+                            ['key' => 'field_sen_hor_mar_open', 'label' => 'Ouvert', 'name'  => 'open', 'type'  => 'true_false', 'ui'    => 1, 'wrapper' => ['width' => '10'],],
+                            ['key' => 'field_sen_hor_mar_start', 'label' => 'Début', 'name'  => 'start', 'type'  => 'time_picker', 'display_format' => 'H:i', 'return_format'  => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_mar_open', 'operator' => '==', 'value' => 1]]],],
+                            ['key' => 'field_sen_hor_mar_end', 'label' => 'Fin', 'name'  => 'end', 'type'  => 'time_picker', 'display_format' => 'H:i', 'return_format'  => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_mar_open', 'operator' => '==', 'value' => 1]]],],
+                            ['key' => 'field_sen_hor_mar_pause_start', 'label' => 'Pause (début)', 'name'  => 'pause_start', 'type'  => 'time_picker', 'display_format' => 'H:i', 'return_format'  => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_mar_open', 'operator' => '==', 'value' => 1]]],],
+                            ['key' => 'field_sen_hor_mar_pause_end', 'label' => 'Pause (fin)', 'name'  => 'pause_end', 'type'  => 'time_picker', 'display_format' => 'H:i', 'return_format'  => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_mar_open', 'operator' => '==', 'value' => 1]]],],
+                        ],
+                    ],
+
+                    // Mercredi
+                    [
+                        'key'   => 'field_sen_hor_mer',
+                        'label' => 'Mercredi',
+                        'name'  => 'mer',
+                        'type'  => 'group',
+                        'layout' => 'row',
+                        'wrapper' => ['width' => '33'],
+                        'sub_fields' => [
+                            ['key' => 'field_sen_hor_mer_open', 'label' => 'Ouvert', 'name' => 'open', 'type' => 'true_false', 'ui' => 1, 'wrapper' => ['width' => '10']],
+                            ['key' => 'field_sen_hor_mer_start', 'label' => 'Début', 'name' => 'start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_mer_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_mer_end', 'label' => 'Fin', 'name' => 'end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_mer_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_mer_pause_start', 'label' => 'Pause (début)', 'name' => 'pause_start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_mer_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_mer_pause_end', 'label' => 'Pause (fin)', 'name' => 'pause_end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_mer_open', 'operator' => '==', 'value' => 1]]]],
+                        ],
+                    ],
+
+                    // Jeudi
+                    [
+                        'key'   => 'field_sen_hor_jeu',
+                        'label' => 'Jeudi',
+                        'name'  => 'jeu',
+                        'type'  => 'group',
+                        'layout' => 'row',
+                        'wrapper' => ['width' => '33'],
+                        'sub_fields' => [
+                            ['key' => 'field_sen_hor_jeu_open', 'label' => 'Ouvert', 'name' => 'open', 'type' => 'true_false', 'ui' => 1, 'wrapper' => ['width' => '10']],
+                            ['key' => 'field_sen_hor_jeu_start', 'label' => 'Début', 'name' => 'start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_jeu_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_jeu_end', 'label' => 'Fin', 'name' => 'end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_jeu_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_jeu_pause_start', 'label' => 'Pause (début)', 'name' => 'pause_start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_jeu_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_jeu_pause_end', 'label' => 'Pause (fin)', 'name' => 'pause_end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_jeu_open', 'operator' => '==', 'value' => 1]]]],
+                        ],
+                    ],
+
+                    // Vendredi
+                    [
+                        'key'   => 'field_sen_hor_ven',
+                        'label' => 'Vendredi',
+                        'name'  => 'ven',
+                        'type'  => 'group',
+                        'layout' => 'row',
+                        'wrapper' => ['width' => '33'],
+                        'sub_fields' => [
+                            ['key' => 'field_sen_hor_ven_open', 'label' => 'Ouvert', 'name' => 'open', 'type' => 'true_false', 'ui' => 1, 'wrapper' => ['width' => '10']],
+                            ['key' => 'field_sen_hor_ven_start', 'label' => 'Début', 'name' => 'start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_ven_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_ven_end', 'label' => 'Fin', 'name' => 'end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_ven_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_ven_pause_start', 'label' => 'Pause (début)', 'name' => 'pause_start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_ven_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_ven_pause_end', 'label' => 'Pause (fin)', 'name' => 'pause_end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_ven_open', 'operator' => '==', 'value' => 1]]]],
+                        ],
+                    ],
+
+                    // Samedi
+                    [
+                        'key'   => 'field_sen_hor_sam',
+                        'label' => 'Samedi',
+                        'name'  => 'sam',
+                        'type'  => 'group',
+                        'layout' => 'row',
+                        'wrapper' => ['width' => '33'],
+                        'sub_fields' => [
+                            ['key' => 'field_sen_hor_sam_open', 'label' => 'Ouvert', 'name' => 'open', 'type' => 'true_false', 'ui' => 1, 'wrapper' => ['width' => '10']],
+                            ['key' => 'field_sen_hor_sam_start', 'label' => 'Début', 'name' => 'start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_sam_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_sam_end', 'label' => 'Fin', 'name' => 'end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_sam_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_sam_pause_start', 'label' => 'Pause (début)', 'name' => 'pause_start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_sam_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_sam_pause_end', 'label' => 'Pause (fin)', 'name' => 'pause_end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_sam_open', 'operator' => '==', 'value' => 1]]]],
+                        ],
+                    ],
+
+                    // Dimanche
+                    [
+                        'key'   => 'field_sen_hor_dim',
+                        'label' => 'Dimanche',
+                        'name'  => 'dim',
+                        'type'  => 'group',
+                        'layout' => 'row',
+                        'wrapper' => ['width' => '100'],
+                        'sub_fields' => [
+                            ['key' => 'field_sen_hor_dim_open', 'label' => 'Ouvert', 'name' => 'open', 'type' => 'true_false', 'ui' => 1, 'wrapper' => ['width' => '10']],
+                            ['key' => 'field_sen_hor_dim_start', 'label' => 'Début', 'name' => 'start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_dim_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_dim_end', 'label' => 'Fin', 'name' => 'end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_dim_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_dim_pause_start', 'label' => 'Pause (début)', 'name' => 'pause_start', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_dim_open', 'operator' => '==', 'value' => 1]]]],
+                            ['key' => 'field_sen_hor_dim_pause_end', 'label' => 'Pause (fin)', 'name' => 'pause_end', 'type' => 'time_picker', 'display_format' => 'H:i', 'return_format' => 'H:i', 'wrapper' => ['width' => '20'], 'conditional_logic' => [[['field' => 'field_sen_hor_dim_open', 'operator' => '==', 'value' => 1]]]],
+                        ],
+                    ],
+
+                    // // Exceptions simples (facultatif, ACF Free-friendly)
+                    // [
+                    //     'key'   => 'field_sen_hor_exceptions',
+                    //     'label' => 'Exceptions / jours fériés (optionnel)',
+                    //     'name'  => 'exceptions',
+                    //     'type'  => 'group',
+                    //     'layout' => 'row',
+                    //     'instructions' => 'Renseigne jusqu’à 3 dates fermées ou horaires spéciaux.',
+                    //     'sub_fields' => [
+                    //         ['key' => 'field_sen_hor_exc_1', 'label' => 'Date 1', 'name' => 'date1', 'type' => 'date_picker', 'display_format' => 'd/m/Y', 'return_format' => 'Y-m-d', 'wrapper' => ['width' => '20']],
+                    //         ['key' => 'field_sen_hor_exc_1_note', 'label' => 'Note 1', 'name' => 'note1', 'type' => 'text', 'wrapper' => ['width' => '30']],
+                    //         ['key' => 'field_sen_hor_exc_2', 'label' => 'Date 2', 'name' => 'date2', 'type' => 'date_picker', 'display_format' => 'd/m/Y', 'return_format' => 'Y-m-d', 'wrapper' => ['width' => '20']],
+                    //         ['key' => 'field_sen_hor_exc_2_note', 'label' => 'Note 2', 'name' => 'note2', 'type' => 'text', 'wrapper' => ['width' => '30']],
+                    //         ['key' => 'field_sen_hor_exc_3', 'label' => 'Date 3', 'name' => 'date3', 'type' => 'date_picker', 'display_format' => 'd/m/Y', 'return_format' => 'Y-m-d', 'wrapper' => ['width' => '20']],
+                    //         ['key' => 'field_sen_hor_exc_3_note', 'label' => 'Note 3', 'name' => 'note3', 'type' => 'text', 'wrapper' => ['width' => '30']],
+                    //     ],
+                    // ],
+
+                ],
             ],
             [
                 'key' => 'field_sen_paiement',

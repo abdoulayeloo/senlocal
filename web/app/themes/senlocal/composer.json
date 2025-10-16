@@ -36,7 +36,10 @@
   "autoload": {
     "psr-4": {
       "App\\": "app/"
-    }
+    },
+    "files": [
+      "app/helpers/opening-hours.php"
+    ]
   },
   "require": {
     "php": ">=8.2",

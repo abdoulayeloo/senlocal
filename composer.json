@@ -41,7 +41,8 @@
     "roots/wp-config": "1.0.0",
     "wpackagist-theme/twentytwentyfive": "^1.0",
     "wpackagist-plugin/advanced-custom-fields":"6.6.0",
-    "wpackagist-plugin/classic-editor": "^1.6"
+    "wpackagist-plugin/classic-editor": "^1.6",
+    "wpackagist-plugin/fakerpress": "^0.8.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

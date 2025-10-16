@@ -17,6 +17,8 @@
   },
   "devDependencies": {
     "@roots/vite-plugin": "^1.0.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.0.9",
     "daisyui": "^5.3.2",
     "laravel-vite-plugin": "^1.2.0",
