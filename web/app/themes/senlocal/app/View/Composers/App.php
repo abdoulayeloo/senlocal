@@ -2,27 +2,24 @@
 
 namespace App\View\Composers;
 
-/**
- * Global data available to all views.
- */
-class App extends AbstractComposer
+use Roots\Acorn\View\Composer;
+
+class App extends Composer
 {
     /**
-     * Bind to all views.
-     * @var array<int,string>
+     * List of views served by this composer.
+     *
+     * @var array
      */
-    protected static $views = ['*'];
+    protected static $views = [
+        '*',
+    ];
 
     /**
-     * @return array<string,mixed>
+     * Retrieve the site name.
      */
-    public function with(): array
+    public function siteName(): string
     {
-        return [
-            'siteName'   => get_bloginfo('name'),
-            'primaryMenu'=> has_nav_menu('primary_navigation') ? wp_get_nav_menu_items(get_nav_menu_locations()['primary_navigation']) : [],
-            'footerMenu' => has_nav_menu('footer_navigation') ? wp_get_nav_menu_items(get_nav_menu_locations()['footer_navigation']) : [],
-            'context'    => $this->queryContext(),
-        ];
+        return get_bloginfo('name', 'display');
     }
 }

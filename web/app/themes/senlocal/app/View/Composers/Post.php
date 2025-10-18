@@ -2,26 +2,24 @@
 
 namespace App\View\Composers;
 
-/**
- * Single WP Post composer.
- */
-class Post extends AbstractComposer
+use Roots\Acorn\View\Composer;
+
+class Post extends Composer
 {
-    /** @var array<int,string> */
+    /**
+     * List of views served by this composer.
+     *
+     * @var array
+     */
     protected static $views = [
-        'single',
+        'partials.page-header',
+        'partials.content',
+        'partials.content-*',
     ];
 
-    public function with(): array
-    {
-        return [
-            'author' => get_the_author_meta('display_name', (int) get_post_field('post_author', get_the_ID())),
-            'date'   => get_the_date('', get_the_ID()),
-            'title'  => $this->title(),
-            'pagination' => $this->pagination(),
-        ];
-    }
-
+    /**
+     * Retrieve the post title.
+     */
     public function title(): string
     {
         if ($this->view->name() !== 'partials.page-header') {
@@ -53,5 +51,17 @@ class Post extends AbstractComposer
         }
 
         return get_the_title();
+    }
+
+    /**
+     * Retrieve the pagination links.
+     */
+    public function pagination(): string
+    {
+        return wp_link_pages([
+            'echo' => 0,
+            'before' => '<p>'.__('Pages:', 'sage'),
+            'after' => '</p>',
+        ]);
     }
 }
